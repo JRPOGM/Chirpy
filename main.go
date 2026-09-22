@@ -20,8 +20,8 @@ func main() {
 	multiplex.Handle("/app/", apiCfg.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
 	multiplex.HandleFunc("GET /api/healthz", handlerReadiness)
 	multiplex.HandleFunc("POST /api/validate_chirp", handlerChirpsValidate)
-	multiplex.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	multiplex.HandleFunc("POST /admin/reset", apiCfg.handlerResets)
+	multiplex.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	serve := &http.Server{
 		Addr:	":" + port,
 		Handler: multiplex,
