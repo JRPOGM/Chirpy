@@ -14,7 +14,7 @@ func handlerChirpsValidate(w http.ResponseWriter, r *http.Request) {
 	}
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
-	err := deocder.Decode(&params)
+	err := decoder.Decode(&params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
