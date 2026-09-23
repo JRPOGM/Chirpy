@@ -22,7 +22,7 @@ func (cfg *apiConfig) handlerMetrics(w http.ResponseWriter, r *http.Request) {
 
 func (cfg *apiConfig) middlewareMetricsInc(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cfg.fileserverHits.Add(1)
+		cfg.fileserverHits.Add(1) // .Add(int32) method for atomic.Int32 to increment count
 		next.ServeHTTP(w, r)
 	})
 }
