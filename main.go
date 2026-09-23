@@ -4,18 +4,39 @@ import (
 	"log"
 	"net/http"
 	"sync/atomic"
+	"os"
+	"database/sql"
+
+	"github.com/JRPOGM/Chirpy/internal/database"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	fileserverHits	atomic.Int32
+	db				*database.Queries
 } //holds stateful, in-memory data to keep track of
 //atomic.Int32 allows to safely incriment & read int value across multiple goroutines
 
 func main() {
+	godotenv.Load()
+	//loads the .env file into environment variables
+	dbURL := os.Getenv("DB_URL")
+	//os.Getenv(key string) gets database url from the environment
+	if dbURL == "" {
+		log.Fatal("DB_URL must be set")
+	}
+	db, err := sql.Open("postgres", dbURL)
+	//sql.Open(driverName, dataSourceName string) opens a connection to your database
+	if err != nil {
+		log.Fatalf("Error opening database: %s", err)
+	}
+	dbQueries := database.New(db)
 	const port = "8080"
 	const filepathRoot = "."
 	apiCfg := apiConfig{
 		fileserverHits: atomic.Int32{},
+		db: dbQueries,
 	}
 	multiplex := http.NewServeMux()
 	//routes requests and creates a simple http server for the program
