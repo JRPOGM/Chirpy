@@ -24,6 +24,7 @@ func respondWithError(w http.ResponseWriter, code int, message string, err error
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	data, err := json.Marshal(payload)
+	//json.Marshal removes whitespace in encoded data
 	if err != nil {
 		log.Printf("Error marshalling JSON: %s", err)
 		w.WriteHeader(500)
