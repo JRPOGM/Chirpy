@@ -31,19 +31,22 @@ func (cfg *apiConfig) handlerChirpsValidate(w http.ResponseWriter, r *http.Reque
     err := decoder.Decode(&params)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
+        //status code 500
         return
     }
     cleaned, err := validateChirp(params.Body)
     if err != nil {
         respondWithError(w, http.StatusBadRequest, err.Error(), err)
+        //status code 400
         return
     }
     chirp, err :=cfg.db.CreateChirp(r.Context(), database.CreateChirpParams{
         Body:   cleaned,
         UserID: params.UserID,
-    })
+    }) //calls CreateChirp and the CreateChirpParams from the internal database models.go and chirps.sql.go
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, "Couldn't create chirp", err)
+        //status code 500
         return
     }
     respondWithJSON(w, http.StatusCreated, Chirp{
