@@ -5,6 +5,7 @@ import "net/http"
 func (cfg *apiConfig) handlerResets(w http.ResponseWriter, r *http.Request) {
 	if cfg.platform != "dev" {
 		w.WriteHeader(http.StatusForbidden)
+		//status code 403
 		w.Write([]byte("Reset is only allowed in dev environment."))
 		return
 	}
@@ -14,9 +15,11 @@ func (cfg *apiConfig) handlerResets(w http.ResponseWriter, r *http.Request) {
 	// cfg.db.Reset calls new query function stored in reset.sql.go
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		//status code 500
 		w.Write([]byte("Failed to reset the database: " + err.Error()))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	//status code 200
 	w.Write([]byte("Hits reset to 0 and database reset to initial state."))
 }

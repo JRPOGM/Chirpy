@@ -27,12 +27,14 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 	err := decoder.Decode(&params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
+		//status code 500
 		return
 	}
 	user, err := cfg.db.CreateUser(r.Context(), params.Email)
 	//cfg.db.CreateUser calls the create query function in users.sql.go file
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
+		//status code 500
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, response{
