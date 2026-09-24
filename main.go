@@ -54,6 +54,7 @@ func main() {
 	// .HandleFunc([host]/[path]) setup to specify methods for functions
 	multiplex.HandleFunc("POST /api/users", apiCfg.handlerUsersCreate)
 	multiplex.HandleFunc("POST /api/chirps", apiCfg.handlerChirpsValidate)
+	multiplex.HandleFunc("GET /api/chirps", apiCfg.handlerGetChirps)
 	// /api path for decoupled logic
 	// non GET functions should return a 405 status response (Method Not Allowed)
 	multiplex.HandleFunc("POST /admin/reset", apiCfg.handlerResets)
