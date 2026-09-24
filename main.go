@@ -47,7 +47,7 @@ func main() {
 	//http.FileServer(http.Dir(root file path)) converts a filepath to a directory to use as the Handler
 	multiplex.HandleFunc("GET /api/healthz", handlerReadiness)
 	// .HandleFunc([host]/[path]) setup to specify methods for functions
-	multiplex.HandleFunc("POST /api/users", apiCfg.handerUsersCreate)
+	multiplex.HandleFunc("POST /api/users", apiCfg.handlerUsersCreate)
 	multiplex.HandleFunc("POST /api/validate_chirp", handlerChirpsValidate)
 	// /api path for decoupled logic
 	// non GET functions should return a 405 status response (Method Not Allowed)
