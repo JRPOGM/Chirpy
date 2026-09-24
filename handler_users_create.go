@@ -30,7 +30,7 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	user, err := cfg.db.CreateUser(r.Context(), params.Email)
-	//cfg.db.CreateUser calls the create query function in table.sql.go file
+	//cfg.db.CreateUser calls the create query function in users.sql.go file
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
 		return

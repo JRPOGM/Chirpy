@@ -11,6 +11,7 @@ func (cfg *apiConfig) handlerResets(w http.ResponseWriter, r *http.Request) {
 	cfg.fileserverHits.Store(0)
 	// atomic.Int23 .Store(val int32) method stores a value to call and enforce
 	err := cfg.db.Reset(r.Context())
+	// cfg.db.Reset calls new query function stored in reset.sql.go
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Failed to reset the database: " + err.Error()))
