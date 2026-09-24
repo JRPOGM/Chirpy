@@ -55,7 +55,7 @@ func (cfg *apiConfig) handlerChirpsValidate(w http.ResponseWriter, r *http.Reque
         UpdatedAt   chirp.UpdatedAt,
         Body:       chirp.Body,
         UserID:     chirp.UserID,
-    })
+    }) //status code 201
 }
 
 func validateChirp(body string) (string, error) { 
