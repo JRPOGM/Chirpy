@@ -1,2 +1,2 @@
---name: Reset :exec
+-- name: Reset :exec
 DELETE FROM users;
