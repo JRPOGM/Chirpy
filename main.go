@@ -27,6 +27,10 @@ func main() {
 	if dbURL == "" {
 		log.Fatal("DB_URL must be set")
 	}
+	platform := os.Getenv("PLATFORM")
+	if platform == "" {
+		log.Fatal("PLATFORM must be set")
+	}
 	db, err := sql.Open("postgres", dbURL)
 	//sql.Open(driverName, dataSourceName string) opens a connection to your database
 	if err != nil {
@@ -38,6 +42,7 @@ func main() {
 	apiCfg := apiConfig{
 		fileserverHits: atomic.Int32{},
 		db: dbQueries,
+		platform: platform,
 	}
 	multiplex := http.NewServeMux()
 	//routes requests and creates a simple http server for the program
