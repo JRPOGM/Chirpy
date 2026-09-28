@@ -17,7 +17,8 @@ type User struct {
 //create a struct copy of the users table
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Email	string	`json:"email"`
+		Password	string	`json:"password"`
+		Email		string	`json:"email"`
 	}
 	type response struct {
 		User
@@ -30,7 +31,15 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		//status code 500
 		return
 	}
-	user, err := cfg.db.CreateUser(r.Context(), params.Email)
+	hashedPassword, err := auth.HashPassword(params.Password)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't hash password", err)
+		return
+	}//status code 500
+	user, err := cfg.db.CreateUser(r.Context(), database.CreateUserParams{
+		Email:			params.Email
+		HashedPassword:	hashedPassword,
+	})
 	//cfg.db.CreateUser calls the create query function in users.sql.go file
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
