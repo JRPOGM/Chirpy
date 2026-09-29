@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/alexedwards/argon2id"
-	"github.com/goland-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
@@ -35,9 +35,9 @@ func CheckPasswordHash(password, hash string) (bool, error) {
 
 func MakeJWT(userID uuid.UUID, tokenSecret string, expiresIn time.Duration) (string, error) {
 	signingKey := []byte(tokenSecret)
-	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 	//jwt.NewWithClaims(signing method, claims) jwt.SigningMethodHS256 seems to be a default
-		Issuer:		string(TokenTypeAccess,)
+		Issuer:		string(TokenTypeAccess),
 		IssuedAt:	jwt.NewNumericDate(time.Now().UTC()),
 		ExpiresAt:	jwt.NewNumericDate(time.Now().UTC().Add(expiresIn)),
 		//jwt.NewNumericDate(time.Time) to set an issue date, and .Add(time.Duration) for the second to set an expiration date
@@ -48,7 +48,7 @@ func MakeJWT(userID uuid.UUID, tokenSecret string, expiresIn time.Duration) (str
 }
 
 func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {
-	claimsStruct := jwt.ResigsteredClaims{}
+	claimsStruct := jwt.RegisteredClaims{}
 	//calling jwt.RegisteredClaims to make an empty struct
 	token, err := jwt.ParseWithClaims(tokenString, &claimsStruct, func(token *jwt.Token) (interface{}, error) { return []byte(tokenSecret), nil })
 	//jwt.ParseWithClaims(string, claims, Keyfunc) takes a string, a call to a struct, and a key function either defined or named

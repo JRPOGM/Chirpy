@@ -13,7 +13,7 @@ func TestCheckPasswordHash(t *testing.T) {
 	hash1, _ := HashPassword(password1)
 	hash2, _ := HashPassword(password2)
 	hash3, _ := HashPassword(password3)
-	test := []struct {
+	tests := []struct {
 		name			string
 		password		string
 		hash			string
@@ -129,10 +129,10 @@ func TestCheckPasswordHash(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			match, err := CheckPasswordHash(tt.password, tt.hash)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CheckPasswordHash() error = %v, wantErr %v", err, tt.wantErr)
+			if (err != nil) != tt.wantError {
+				t.Errorf("CheckPasswordHash() error = %v, wantErr %v", err, tt.wantError)
 			}
-			if !tt.wantErr && match != tt.matchPassword {
+			if !tt.wantError && match != tt.matchPassword {
 				t.Errorf("CheckPasswordHash() expects %v, got %v", tt.matchPassword, match)
 			}
 		})
@@ -189,10 +189,10 @@ func TestValidateJWT(t *testing.T) {
 		},
 		{
 			name:			"False truth",
-			tokenString:	validtoken2,
-			tokenSecret:	"false_truth"
+			tokenString:	validToken2,
+			tokenSecret:	"false_truth",
 			wantUserID:		uuid.Nil,
-			wantErr:		true
+			wantErr:		true,
 		},
 		{
 			name:			"Valid token",
