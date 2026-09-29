@@ -22,7 +22,7 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 		//status code 500
 		return
 	}
-	user, err := cfg.db.GetUserByEmail(r.Context, params.Email)
+	user, err := cfg.db.GetUserByEmail(r.Context(), params.Email)
 	//cfg.db.GetUserByEmail pulled from users.sql.go
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)

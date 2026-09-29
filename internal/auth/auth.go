@@ -12,7 +12,7 @@ func HashPassword(password string) (string, error) {
 }
 
 func CheckPasswordHash(password, hash string) (bool, error) {
-	match, err = argoin2id.ComparePasswordAndHash(password, hash)
+	match, err := argon2id.ComparePasswordAndHash(password, hash)
 	//argoin2id.ComparePasswordAndHash(string, string) always returns a bool and an error
 	if err != nil {
 		return false, err

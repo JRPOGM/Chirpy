@@ -39,7 +39,7 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		return
 	}//status code 500
 	user, err := cfg.db.CreateUser(r.Context(), database.CreateUserParams{
-		Email:			params.Email
+		Email:			params.Email,
 		HashedPassword:	hashedPassword,
 	})
 	//cfg.db.CreateUser calls the create query function in users.sql.go file
