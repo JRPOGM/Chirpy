@@ -8,6 +8,7 @@ import (
     "strings"
     "time"
 
+    "github.com/JRPOGM/Chirpy/internal/auth"
     "github.com/google/uuid"
     "github.com/JRPOGM/Chirpy/internal/database"
 )
@@ -23,7 +24,20 @@ type Chirp struct {
 func (cfg *apiConfig) handlerChirpsValidate(w http.ResponseWriter, r *http.Request) {
     type parameters struct {
         Body    string          `json:"body"`
-        UserID  uuid.UUID          `json:"user_id"`
+    }
+    token, err := auth.GetBearerToken(r.Header)
+    //calls auth.GetBearerToken(header) from auth.go
+    if err != nil {
+        respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+        //status code 201
+        return
+    }
+    userID, err := auth.ValidateJWT(token, cfg.jwtSecret)
+    //calls auth.ValidateJWT(tokenstring, tokensecret) from auth.go
+    if err != nil {
+        respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+        //status code 201
+        return
     }
     decoder := json.NewDecoder(r.Body)
     //json.NewDecoder(r io.Reader) creates a decoder from a pointed Request source
@@ -42,7 +56,7 @@ func (cfg *apiConfig) handlerChirpsValidate(w http.ResponseWriter, r *http.Reque
     }
     chirp, err :=cfg.db.CreateChirp(r.Context(), database.CreateChirpParams{
         Body:   cleaned,
-        UserID: params.UserID,
+        UserID: userID,
     }) //calls CreateChirp and the CreateChirpParams from the internal database models.go and chirps.sql.go
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, "Couldn't create chirp", err)

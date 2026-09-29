@@ -2,6 +2,7 @@ package auth
 
 import (
 	"time"
+	"net/http"
 	"testing"
 	"github.com/google/uuid"
 )
@@ -150,74 +151,132 @@ func TestValidateJWT(t *testing.T) {
 		tokenString		string
 		tokenSecret		string
 		wantUserID		uuid.UUID
-		wantErr			bool
+		wantError		bool
 	}{
 		{
 			name:			"Valid token",
 			tokenString:	validToken,
 			tokenSecret:	"secret",
 			wantUserID:		userID,
-			wantErr:		false,
+			wantError:		false,
 		},
 		{
 			name:			"Invalid token",
 			tokenString:	"invalid.token.string",
 			tokenSecret:	"secret",
 			wantUserID:		uuid.Nil,
-			wantErr:		true,
+			wantError:		true,
 		},
 		{
 			name:			"Wrong secret",
 			tokenString:	validToken,
 			tokenSecret:	"wrong_secret",
 			wantUserID:		uuid.Nil,
-			wantErr:		true,
+			wantError:		true,
 		},
 		{
 			name:			"True token",
 			tokenString:	validToken2,
 			tokenSecret:	"truth",
 			wantUserID:		userID,
-			wantErr:		false,
+			wantError:		false,
 		},
 		{
 			name:			"Unreal token",
 			tokenString:	"unreal.token.string",
 			tokenSecret:	"truth",
 			wantUserID:		uuid.Nil,
-			wantErr:		true,
+			wantError:		true,
 		},
 		{
 			name:			"False truth",
 			tokenString:	validToken2,
 			tokenSecret:	"false_truth",
 			wantUserID:		uuid.Nil,
-			wantErr:		true,
+			wantError:		true,
 		},
 		{
 			name:			"Valid token",
 			tokenString:	validToken3,
 			tokenSecret:	"power",
 			wantUserID:		userID,
-			wantErr:		false,
+			wantError:		false,
 		},
 		{
 			name:			"Valid token",
 			tokenString:	validToken4,
 			tokenSecret:	"consequences",
 			wantUserID:		userID,
-			wantErr:		false,
+			wantError:		false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotUserID, err := ValidateJWT(tt.tokenString, tt.tokenSecret)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateJWT() error = %v, wantErr %v", err, tt.wantErr)
+			if (err != nil) != tt.wantError {
+				t.Errorf("ValidateJWT() error = %v, wantErr %v", err, tt.wantError)
 				return
 			}
 			if gotUserID != tt.wantUserID {
 				t.Errorf("ValidateJWT() gotUserID = %v, want %v", gotUserID, tt.wantUserID)
+			}
+		})
+	}
+}
+
+func TestGetBearerToken(t *testing.T) {
+	test := []struct {
+		name		string
+		headers		http.Header
+		wantToken	string
+		wantError	bool
+	}{
+		{
+			name:		"Valid Bearer token",
+			headers:	http.Header{"Authorization": []string{"Bearer valid_token"}},
+			wantToken:	"valid_token",
+			wantError:	false,
+		},
+		{
+			name:		"Missing Authorization header",
+			headers:	http.Header{},
+			wantToken:	"",
+			wantError:	true,
+		},
+		{
+			name:		"Malformed Authroization header",
+			headers:	http.Header{"Authorization": []string{"InvalidBearer token"}},
+			wantToken:	"",
+			wantError:	true,
+		},
+		{
+			name:		"Valid Bearer token",
+			headers:	http.Header{"Authorization": []string{"Segmented valid_token"}},
+			wantToken:	"valid_token",
+			wantError:	false,
+		},
+		{
+			name:		"Valid Bearer token",
+			headers:	http.Header{"Authorization": []string{"Technically correct_token"}},
+			wantToken:	"correct_token",
+			wantError:	false,
+		},
+		{
+			name:		"Misspelled Authroization header",
+			headers:	http.Header{"Amorization": []string{"Bearer valid_token"}},
+			wantToken:	"",
+			wantError:	true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotToken, err := GetBearerToken(tt.headers)
+			if (err != nil) != tt.wantError {
+				t.Errorf("GetBearerToken() error = %v, wantErr %v", err, tt.wantError)
+				return
+			}
+			if gotToken != tt.wantToken {
+				t.Errorf("GetBearerToken() gotToken = %v, want %v", gotToken, tt.wantToken)
 			}
 		})
 	}

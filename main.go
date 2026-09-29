@@ -16,6 +16,7 @@ type apiConfig struct {
 	fileserverHits	atomic.Int32
 	db				*database.Queries
 	platform		string
+	jwtSecret		string
 } //holds stateful, in-memory data to keep track of
 //atomic.Int32 allows to safely incriment & read int value across multiple goroutines
 
@@ -31,6 +32,10 @@ func main() {
 	if platform == "" {
 		log.Fatal("PLATFORM must be set")
 	}
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET environment variable is not set")
+	}
 	db, err := sql.Open("postgres", dbURL)
 	//sql.Open(driverName, dataSourceName string) opens a connection to your database
 	if err != nil {
@@ -43,6 +48,7 @@ func main() {
 		fileserverHits: atomic.Int32{},
 		db: dbQueries,
 		platform: platform,
+		jwtSecret: jwtSecret,
 	}
 	multiplex := http.NewServeMux()
 	//routes requests and creates a simple http server for the program
