@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"encoding/json"
-	"int"
+	"time"
 	"github.com/JRPOGM/Chirpy/internal/auth"
 )
 

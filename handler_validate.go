@@ -42,7 +42,7 @@ func (cfg *apiConfig) handlerChirpsValidate(w http.ResponseWriter, r *http.Reque
     decoder := json.NewDecoder(r.Body)
     //json.NewDecoder(r io.Reader) creates a decoder from a pointed Request source
     params := parameters{}
-    err := decoder.Decode(&params)
+    err = decoder.Decode(&params)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
         //status code 500
