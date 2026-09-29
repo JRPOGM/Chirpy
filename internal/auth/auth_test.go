@@ -131,7 +131,7 @@ func TestCheckPasswordHash(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			match, err := CheckPasswordHash(tt.password, tt.hash)
 			if (err != nil) != tt.wantError {
-				t.Errorf("CheckPasswordHash() error = %v, wantErr %v", err, tt.wantError)
+				t.Errorf("CheckPasswordHash() error = %v, wantError %v", err, tt.wantError)
 			}
 			if !tt.wantError && match != tt.matchPassword {
 				t.Errorf("CheckPasswordHash() expects %v, got %v", tt.matchPassword, match)
@@ -214,7 +214,7 @@ func TestValidateJWT(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			gotUserID, err := ValidateJWT(tt.tokenString, tt.tokenSecret)
 			if (err != nil) != tt.wantError {
-				t.Errorf("ValidateJWT() error = %v, wantErr %v", err, tt.wantError)
+				t.Errorf("ValidateJWT() error = %v, wantError %v", err, tt.wantError)
 				return
 			}
 			if gotUserID != tt.wantUserID {
@@ -225,7 +225,7 @@ func TestValidateJWT(t *testing.T) {
 }
 
 func TestGetBearerToken(t *testing.T) {
-	test := []struct {
+	tests := []struct {
 		name		string
 		headers		http.Header
 		wantToken	string
@@ -251,13 +251,13 @@ func TestGetBearerToken(t *testing.T) {
 		},
 		{
 			name:		"Valid Bearer token",
-			headers:	http.Header{"Authorization": []string{"Segmented valid_token"}},
-			wantToken:	"valid_token",
+			headers:	http.Header{"Authorization": []string{"Bearer true_token"}},
+			wantToken:	"true_token",
 			wantError:	false,
 		},
 		{
 			name:		"Valid Bearer token",
-			headers:	http.Header{"Authorization": []string{"Technically correct_token"}},
+			headers:	http.Header{"Authorization": []string{"Bearer correct_token"}},
 			wantToken:	"correct_token",
 			wantError:	false,
 		},
@@ -272,7 +272,7 @@ func TestGetBearerToken(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			gotToken, err := GetBearerToken(tt.headers)
 			if (err != nil) != tt.wantError {
-				t.Errorf("GetBearerToken() error = %v, wantErr %v", err, tt.wantError)
+				t.Errorf("GetBearerToken() error = %v, wantError %v", err, tt.wantError)
 				return
 			}
 			if gotToken != tt.wantToken {
