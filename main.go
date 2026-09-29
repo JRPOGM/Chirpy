@@ -61,6 +61,8 @@ func main() {
 	multiplex.HandleFunc("POST /api/users", apiCfg.handlerUsersCreate)
 	multiplex.HandleFunc("POST /api/chirps", apiCfg.handlerChirpsValidate)
 	multiplex.HandleFunc("POST /api/login", apiCfg.handlerUsersLogin)
+	multiplex.HandleFunc("POST /api/refresh", apiCfg.handlerRefresh)
+	multiplex.HandleFunc("POST /api/revoke", apiCfg.handlerRevoke)
 	multiplex.HandleFunc("GET /api/chirps", apiCfg.handlerGetChirps)
 	multiplex.HandleFunc("GET /api/chirps/{chirpID}", apiCfg.handlerChirpIdentification)
 	// /api path for decoupled logic
