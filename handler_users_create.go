@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
+	"github.com/JRPOGM/Chirpy/internal/auth"
+	"github.com/JRPOGM/Chirpy/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -13,6 +14,7 @@ type User struct {
 	CreatedAt	time.Time	`json:"created_at"`
 	UpdatedAt	time.Time	`json:"updated_at"`
 	Email		string		`json:"email"`
+	Password	string		`json:"password"`
 }
 //create a struct copy of the users table
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
