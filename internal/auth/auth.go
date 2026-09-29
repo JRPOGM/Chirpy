@@ -2,6 +2,8 @@ package auth
 
 import (
 	"time"
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
@@ -91,4 +93,13 @@ func GetBearerToken(headers http.Header) (string, error) {
 		return "", errors.New("malformed authroization header")
 	}
 	return splitAuth[1], nil
+}
+
+func MakeRefreshToken() string {
+	token := make([]byte, 32)
+	//creates a []byte of 32 entries, equal to 256 bit
+	rand.Read(token)
+	//rand.Read([]byte) fills byte with cryptographically secure random bytes
+	return hex.EncodeToString(token)
+	//hex.EncodeToString([]byte) returns the hexadecimal encoding of the byte
 }
