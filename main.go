@@ -71,6 +71,7 @@ func main() {
 	multiplex.HandleFunc("GET /admin/metrics", apiCfg.handlerMetrics)
 	// /admin path are for user control data
 	//apiCfg.func prefix for all functions with (cfg *apiConfig)
+	multiplex.HandleFunc("PUT /api/users", apiCfg.handlerUpdates)
 	serve := &http.Server{
 		Addr:	":" + port,
 		Handler: multiplex,
