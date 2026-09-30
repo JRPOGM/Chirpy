@@ -19,6 +19,7 @@ type apiConfig struct {
 	jwtSecret		string
 } //holds stateful, in-memory data to keep track of
 //atomic.Int32 allows to safely incriment & read int value across multiple goroutines
+//all strings derived from the .env file
 
 func main() {
 	godotenv.Load()
@@ -36,6 +37,7 @@ func main() {
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
+	
 	db, err := sql.Open("postgres", dbURL)
 	//sql.Open(driverName, dataSourceName string) opens a connection to your database
 	if err != nil {
