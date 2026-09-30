@@ -15,6 +15,7 @@ type User struct {
 	UpdatedAt	time.Time	`json:"updated_at"`
 	Email		string		`json:"email"`
 	Password	string		`json:"password"`
+	IsChirpyRed string		`json:"is_chirpy_red"`
 }
 //create a struct copy of the users table
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +55,7 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 			CreatedAt:	user.CreatedAt,
 			UpdatedAt: 	user.UpdatedAt,
 			Email:		user.Email,
+			IsChirpyRed: user.IsChirpyRed,
 		},
 	})
 	//StatusCreated is status code 201

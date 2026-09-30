@@ -75,6 +75,7 @@ func main() {
 	//apiCfg.func prefix for all functions with (cfg *apiConfig)
 	multiplex.HandleFunc("PUT /api/users", apiCfg.handlerUpdates)
 	multiplex.HandleFunc("DELETE /api/chirps/{chirpID}", apiCfg.handlerDeleteChirp)
+	multiplex.HandleFunc("POST /api/polka/webhooks", apiCfg.hanlderPolkaWebhooks)
 	serve := &http.Server{
 		Addr:	":" + port,
 		Handler: multiplex,
