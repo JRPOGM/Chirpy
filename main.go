@@ -72,6 +72,7 @@ func main() {
 	// /admin path are for user control data
 	//apiCfg.func prefix for all functions with (cfg *apiConfig)
 	multiplex.HandleFunc("PUT /api/users", apiCfg.handlerUpdates)
+	multiplex.HandleFunc("DELETE /api/chirps/{chirpID}", apiCfg.handlerDeleteChirp)
 	serve := &http.Server{
 		Addr:	":" + port,
 		Handler: multiplex,
