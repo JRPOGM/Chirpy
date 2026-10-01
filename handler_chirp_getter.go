@@ -3,12 +3,26 @@ package main
 
 import (
     "net/http"
+	"github.com/google/uuid"
+	"github.com/JRPOGM/Chirpy/internal/database"
 )
 
 func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
-    allChirps, err :=cfg.db.GetChirps(r.Context())
-	//calls GetChirps from chirps.sql.go
-    if err != nil {
+    var allChirps []database.Chirp
+	authorID, err := authorIDRequest(r)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid author ID", err)
+		//status code 400
+		return
+	}
+	if authorID != uuid.Nil {
+		allChirps, err = cfg.db.GetChirpAuthor(r.Context(), authorID)
+		//calls GetChirpAuthor from chirps.sql.go
+	} else {
+		allChirps, err = cfg.db.GetChirps(r.Context())
+		//calls GetChirps from chirps.sql.go
+	}
+	if err != nil {
         respondWithError(w, http.StatusInternalServerError, "Couldn't get chirp", err)
         //status code 500
         return
@@ -26,4 +40,17 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
 	} //appends an array to an array
     respondWithJSON(w, http.StatusOK, chirps)
 	//status code 200
+}
+
+func authorIDRequest(r *http.Request) (uuid.UUID, error) {
+	authorID := r.URL.Query().Get("author_id")
+	//returns a string that contains the provided Get() value
+	if authorID == "" {
+		return uuid.Nil, nil
+	}
+	auID, err := uuid.Parse(authorID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return auID, nil
 }
