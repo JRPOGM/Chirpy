@@ -17,6 +17,7 @@ type apiConfig struct {
 	db				*database.Queries
 	platform		string
 	jwtSecret		string
+	polkaKey 		string
 } //holds stateful, in-memory data to keep track of
 //atomic.Int32 allows to safely incriment & read int value across multiple goroutines
 //all strings derived from the .env file
@@ -37,7 +38,10 @@ func main() {
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
-	
+	polkaKey := os.Getenv("POLKA_KEY")
+    if polkaKey == "" {
+        log.Fatal("POLKIA_KEY environment variable is not set")
+    }
 	db, err := sql.Open("postgres", dbURL)
 	//sql.Open(driverName, dataSourceName string) opens a connection to your database
 	if err != nil {
@@ -51,6 +55,7 @@ func main() {
 		db: dbQueries,
 		platform: platform,
 		jwtSecret: jwtSecret,
+		polkaKey: polkaKey,
 	}
 	multiplex := http.NewServeMux()
 	//routes requests and creates a simple http server for the program

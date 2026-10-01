@@ -95,6 +95,18 @@ func GetBearerToken(headers http.Header) (string, error) {
 	return splitAuth[1], nil
 }
 
+func GetAPIKey(headers http.Header) (string, error) {
+    apiKey := headers.Get("Authorization")
+    if apiKey == "" {
+        return "", ErrNoAuthHeaderIncluded
+    }
+    splitKey := strings.Split(apiKey, " ")
+    if len(splitKey) < 2 || splitKey[0] != "ApiKey" {
+        return "", errors.New("invalid authprization string")
+    }
+   return splitKey[1], nil
+}
+
 func MakeRefreshToken() string {
 	token := make([]byte, 32)
 	//creates a []byte of 32 entries, equal to 256 bit
