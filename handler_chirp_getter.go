@@ -3,6 +3,7 @@ package main
 
 import (
     "net/http"
+	"sort"
 	"github.com/google/uuid"
 	"github.com/JRPOGM/Chirpy/internal/database"
 )
@@ -27,6 +28,11 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
         //status code 500
         return
     }
+	sorting := "asc"
+	sortingParams := r.URL.Query().Get("sort")
+	if sortingParams == "desc" {
+		sorting = "desc"
+	}
 	chirps := []Chirp{}
 	//creates an array of the Chirp struct
 	for _, allChirp := range allChirps {
@@ -38,6 +44,12 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
         	UserID:     allChirp.UserID,
 		})
 	} //appends an array to an array
+	sort.Slice(chirps, func(i, j int) bool {
+		if sorting == "desc" {
+			return chirps[i].CreatedAt.After(chirps[j].CreatedAt)
+		}
+		return chirps[i].CreatedAt.Before(chirps[j].CreatedAt)
+	})
     respondWithJSON(w, http.StatusOK, chirps)
 	//status code 200
 }
